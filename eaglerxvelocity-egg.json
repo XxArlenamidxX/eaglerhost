@@ -1,0 +1,42 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-07-17T10:12:35-04:00",
+    "name": "BungeeCord (EaglerXVelocity)",
+    "author": "arlenjou336@gmail.com",
+    "description": "Downloads the BungeeCord Fork + Plugin for EaglerCraft. Acts as a proxy between players and backend EaglerCraft Spigot servers to allow joining.",
+    "features": null,
+    "docker_images": {
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17"
+    },
+    "file_denylist": [],
+    "startup": "java -jar bungee.jar",
+    "config": {
+        "files": "{\r\n    \"plugins\/eaglerxvelocity\/listeners.yml\": {\r\n        \"parser\": \"yaml\",\r\n        \"find\": {\r\n            \"listener_01.address\": \"0.0.0.0:{{server.build.default.port}}\",\r\n            \"listener_01.server_motd\": \"&6An Eaglercraft server\\\\n&bHosted by EaglerHosts\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"Listening on \"\r\n}",
+        "logs": "{\r\n    \"custom\": false\r\n}",
+        "stop": "end"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# EaglerHosting Bungee Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\ncd \/mnt\/server || exit 1\r\n\r\necho \"[EAGLERHOSTING] Downloading files...\"\r\nif ! command -v curl &>\/dev\/null; then\r\n    echo \"[ERROR] curl is not installed. Please install it in the Docker image.\"\r\n    exit 1\r\nfi\r\n\r\ncurl -L \"https:\/\/github.com\/XxArlenamidxX\/eaglerhost\/raw\/refs\/heads\/main\/bungee.zip\" -o bungee.zip\r\n\r\necho \"[EAGLERHOSTING] Unzipping contents...\"\r\nif ! command -v unzip &>\/dev\/null; then\r\n    echo \"[ERROR] unzip is not installed. Please install it in the Docker image.\"\r\n    exit 1\r\nfi\r\n\r\nunzip -o bungee.zip\r\nrm -f bungee.zip\r\n\r\n# Force update velocity.toml\r\necho \"[EAGLERHOSTING] Patching velocity.toml...\"\r\nif [ -f \".\/velocity.toml\" ]; then\r\n    sed -i 's\/^\\s*\ufeff*lobby\\s*=\\s*\".*\"\/lobby = \"'\"${SERVER_IP}:${SPIGOT_PORT}\"'\"\/' velocity.toml\r\nelse\r\n    echo \"[WARNING] velocity.toml not found, skipping patch.\"\r\nfi\r\n\r\n# Download new index.html for EaglerXVelocity\r\necho \"[EAGLERHOSTING] Installing custom index.html...\"\r\ncurl -L \"https:\/\/raw.githubusercontent.com\/XxArlenamidxX\/eaglerhost\/refs\/heads\/main\/index.html\" -o plugins\/eaglerxvelocity\/web\/index.html\r\n\r\necho \"[EAGLERHOSTING] Complete. Ready to start.\"",
+            "container": "ghcr.io\/parkervcp\/installers:alpine",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Spigot Server Port",
+            "description": "The Port of your EaglerCraft Spigot Server. If you do not have an EaglerCraft Spigot Server, please create one as it is required to run the Proxy!",
+            "env_variable": "SPIGOT_PORT",
+            "default_value": "25565",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|integer",
+            "field_type": "text"
+        }
+    ]
+}

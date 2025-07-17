@@ -1,0 +1,31 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-07-17T10:12:41-04:00",
+    "name": "Spigot",
+    "author": "arlenjou336@gmail.com",
+    "description": "Downloads the Spigot Fork for EaglerCraft.",
+    "features": null,
+    "docker_images": {
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17"
+    },
+    "file_denylist": [],
+    "startup": "java -jar server.jar",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"server-ip\": \"0.0.0.0\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "logs": "{\r\n    \"custom\": false\r\n}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# EaglerHosting Server Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\ncd \/mnt\/server || exit 1\r\n\r\necho \"[EAGLERHOSTING] Downloading files...\"\r\nif ! command -v curl &>\/dev\/null; then\r\n    echo \"[ERROR] curl is not installed. Please install it in the Docker image.\"\r\n    exit 1\r\nfi\r\n\r\ncurl -L \"https:\/\/github.com\/XxArlenamidxX\/eaglerhost\/raw\/refs\/heads\/main\/server.zip\" -o server.zip\r\n\r\necho \"[EAGLERHOSTING] Unzipping contents...\"\r\nif ! command -v unzip &>\/dev\/null; then\r\n    echo \"[ERROR] unzip is not installed. Please install it in the Docker image.\"\r\n    exit 1\r\nfi\r\n\r\nunzip -o server.zip\r\nrm -f server.zip\r\n\r\necho \"[EAGLERHOSTING] Complete. Ready to start.\"",
+            "container": "ghcr.io\/parkervcp\/installers:alpine",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": []
+}
